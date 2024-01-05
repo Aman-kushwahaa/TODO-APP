@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { boolean } = require('zod');
+const { createTodo, updateTodo } = require('./types');
 
 const app = express();
 app.use(express.json());
@@ -37,31 +38,29 @@ app.get("/", (req, res) => {
 
 app.post("/createTodo", (req, res) => {
     // console.log("adding called")
-    console.log(req.body.title);
-    const newTodo = {
-        id: counter,
-        title: req.body.title,
-        description: req.body.description
-    }
-    todos.push(newTodo);
-    counter++;
+    const createPayLoad = req.body;
+    const ParsePayLoad = createTodo.safeParse(createPayLoad);
+    if (!ParsePayLoad.success) {
+        res.status(411).json({
+            msg: "Please Enter Correct Inputs"
+        })
 
-    res.send("Todo added Successfully");
-    console.log(JSON.stringify(todos));
+    }
 
 })
 
 app.put('/completed', (req, res) => {
-    let todoId = req.body.id;
-    //getting the required Item from the array
-    todos.filter(function (todo) {
-        todoId = todo.id;
-        console.log
-
-
-    })
-
+    const updatePayLoad = req.body;
+    const ParsePayLoad = updateTodo.safeParse(updatePayLoad);
+    if (!ParsePayLoad.success) {
+        res.status(411).json({
+            msg: "TODO TASK NOT FOUND"
+        })
+    }
 
 })
+
+
+
 
 app.listen(3000);
